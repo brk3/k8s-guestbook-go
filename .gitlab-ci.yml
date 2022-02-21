@@ -5,7 +5,7 @@ build-job:
     - REGISTRY=brk3/guestbook-go make build
 
 push-job:
-  stage: push
+  stage: build
   script:
     - echo "todo..."
     #- REGISTRY=brk3/guestbook-go make push
