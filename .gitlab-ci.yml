@@ -6,7 +6,8 @@ build-job:
   stage: build
   script:
     - cd guestbook-go
-    - REGISTRY=brk3/guestbook-go make build
+    #- REGISTRY=brk3/guestbook-go make build
+    docker build -t brk3/guestbook:${VERSION} .
 
 push-job:
   stage: build
