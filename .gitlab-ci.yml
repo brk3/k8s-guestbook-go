@@ -1,6 +1,6 @@
 image: docker:git
 services:
-	- docker:dind
+  - docker:dind
 
 build-job:
   stage: build
