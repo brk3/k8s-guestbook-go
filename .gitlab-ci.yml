@@ -1,6 +1,6 @@
-image: docker:git
-services:
-  - docker:dind
+#image: docker:git
+#services:
+#  - docker:dind
 
 variables:
   DOCKER_REGISTRY_USER: $DOCKER_REGISTRY_USER
