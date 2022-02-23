@@ -1,19 +1,24 @@
-#image: docker:git
-#services:
-#  - docker:dind
+image: docker:git
+services:
+  - docker:dind
 
-#build-job:
-  #stage: build
-  #script:
-    #- cd guestbook-go
-    ##- REGISTRY=brk3/guestbook-go make build
-    #- docker build -t "brk3/guestbook" .
+variables:
+  DOCKER_REGISTRY_USER: $DOCKER_REGISTRY_USER
+  DOCKER_REGISTRY_PASS: $DOCKER_REGISTRY_PASS
+  DOCKER_IMAGE_TAG: brk3/guestbook:$CI_COMMIT_SHORT_SHA
 
-#push-job:
-  #stage: build
-  #script:
-    #- echo "todo..."
-    ##- REGISTRY=brk3/guestbook-go make push
+build-job:
+  stage: build
+  script:
+    - cd guestbook-go
+    - REGISTRY=brk3/guestbook-go make build
+    - docker build -t $DOCKER_IMAGE_TAG .
+
+push-job:
+  stage: build
+  script:
+    - docker login -u $DOCKER_REGISTRY_USER -p DOCKER_REGISTRY_PASS
+    - docker push $DOCKER_IMAGE_TAG
 
  deploy:
    image:
