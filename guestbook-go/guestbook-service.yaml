@@ -16,6 +16,6 @@ spec:
   selector:
     app: guestbook
   sessionAffinity: None
-  type: LoadBalancer
-status:
-  loadBalancer: {}
+  #type: LoadBalancer
+#status:
+  #loadBalancer: {}
