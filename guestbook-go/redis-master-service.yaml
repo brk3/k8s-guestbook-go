@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: redis
+    role: master
+  name: redis-master
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: redis-server
+  selector:
+    app: redis
+    role: master
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

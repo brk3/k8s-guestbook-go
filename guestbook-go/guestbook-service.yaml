@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: guestbook
+  name: guestbook
+spec:
+  allocateLoadBalancerNodePorts: true
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: http-server
+  selector:
+    app: guestbook
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
