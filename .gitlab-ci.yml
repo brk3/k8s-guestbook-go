@@ -43,4 +43,5 @@ deploy:
    - kubectl config get-contexts
    - kubectl config use-context mygroup1371/myproject:pbourke
    - sed -i "s|k8s.gcr.io/guestbook:v3|${CI_IMAGE_TAG}|" guestbook-go/guestbook-controller.yaml
+   - kubectl apply -f guestbook-go/namespace.yaml
    - kubectl apply -f guestbook-go/ -n pbourke
