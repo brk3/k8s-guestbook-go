@@ -6,9 +6,9 @@ metadata:
     app: guestbook
   name: guestbook
 spec:
-  allocateLoadBalancerNodePorts: true
-  externalTrafficPolicy: Cluster
-  internalTrafficPolicy: Cluster
+  #allocateLoadBalancerNodePorts: true
+  #externalTrafficPolicy: Cluster
+  #internalTrafficPolicy: Cluster
   ports:
   - port: 3000
     protocol: TCP
