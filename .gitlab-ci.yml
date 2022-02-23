@@ -21,5 +21,5 @@
      entrypoint: [""]
    script:
    - kubectl config get-contexts
-   #- kubectl config use-context path/to/agent/repository:agent-name
-   #- kubectl get pods
+   - kubectl config use-context mygroup1371/myproject:pbourke
+   - kubectl get pods
