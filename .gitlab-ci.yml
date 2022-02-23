@@ -2,15 +2,25 @@
 #services:
 #  - docker:dind
 
-build-job:
-  stage: build
-  script:
-    - cd guestbook-go
-    #- REGISTRY=brk3/guestbook-go make build
-    - docker build -t "brk3/guestbook" .
+#build-job:
+  #stage: build
+  #script:
+    #- cd guestbook-go
+    ##- REGISTRY=brk3/guestbook-go make build
+    #- docker build -t "brk3/guestbook" .
 
-push-job:
+#push-job:
+  #stage: build
+  #script:
+    #- echo "todo..."
+    ##- REGISTRY=brk3/guestbook-go make push
+
+test-k8s-access:
   stage: build
-  script:
-    - echo "todo..."
-    #- REGISTRY=brk3/guestbook-go make push
+  image:
+   name: bitnami/kubectl:latest
+   entrypoint: [""]
+   script:
+   - kubectl config get-contexts
+   #- kubectl config use-context path/to/agent/repository:agent-name
+   #- kubectl get pods
