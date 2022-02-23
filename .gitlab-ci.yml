@@ -1,23 +1,38 @@
-image: docker:git
-services:
-  - docker:dind
+#image: docker:git
+#services:
+#  - docker:dind
 
 variables:
-  DOCKER_REGISTRY_USER: ${DOCKER_REGISTRY_USER}
-  DOCKER_REGISTRY_PASS: ${DOCKER_REGISTRY_PASS}
-  DOCKER_IMAGE_TAG: brk3/guestbook:${CI_COMMIT_SHORT_SHA}
+  CI_REGISTRY_USER: ${CI_REGISTRY_USER}
+  CI_REGISTRY_PASSWORD: ${CI_REGISTRY_PASSWORD}
+  CI_IMAGE_TAG: brk3/guestbook:${CI_COMMIT_SHORT_SHA}
+  CI_REGISTRY: docker.io
 
-build-job:
-  stage: build
-  script:
-    - cd guestbook-go
-    - docker build -t $DOCKER_IMAGE_TAG .
+#build-job:
+#  stage: build
+#  script:
+#    - cd guestbook-go
+#    - docker build -t $DOCKER_IMAGE_TAG .
 
-push-job:
+#push-job:
+#  stage: build
+#  script:
+#    - docker login -u $DOCKER_REGISTRY_USER -p DOCKER_REGISTRY_PASS
+#    - docker push $DOCKER_IMAGE_TAG
+
+build:
   stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
   script:
-    - docker login -u $DOCKER_REGISTRY_USER -p DOCKER_REGISTRY_PASS
-    - docker push $DOCKER_IMAGE_TAG
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "guestbook-go"
+      --dockerfile "guestbook-go/Dockerfile"
+      --destination "${CI_IMAGE_TAG}""
 
 deploy:
  image:
