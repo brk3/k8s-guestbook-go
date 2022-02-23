@@ -32,7 +32,7 @@ build:
       /kaniko/executor
       --context "guestbook-go"
       --dockerfile "guestbook-go/Dockerfile"
-      --destination "${CI_IMAGE_TAG}""
+      --destination "${CI_IMAGE_TAG}"
 
 deploy:
  image:
