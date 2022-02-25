@@ -60,6 +60,13 @@ pipeline:
                                                     branch: main
                                             skipResourceVersioning: false
                                             helmVersion: V2
+                              artifacts:
+                                  primary:
+                                      spec:
+                                          connectorRef: pbourkedockerhubconnector
+                                          imagePath: brk3/guestbook
+                                          tag: <+input>
+                                      type: DockerRegistry
                   infrastructure:
                       environmentRef: aks
                       infrastructureDefinition:
