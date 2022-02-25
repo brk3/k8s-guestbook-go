@@ -22,7 +22,7 @@ pipeline:
                       type: KubernetesDirect
                       spec:
                           connectorRef: cicdtestakscluster
-                          namespace: guestbook
+                          namespace: harness-delegate-ng
                   execution:
                       steps:
                           - step:
