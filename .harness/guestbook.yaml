@@ -31,6 +31,6 @@ pipeline:
                                 identifier: guestbook
                                 spec:
                                     connectorRef: pbourkedockerhubconnector
-                                    repo: guestbook
+                                    repo: brk3/guestbook
                                     tags:
                                         - <+codebase.commitSha>
