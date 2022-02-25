@@ -35,8 +35,8 @@ deploy:
         if kubectl get ns "${NAMESPACE}" >/dev/null 2>&1; then
           echo "Namespace ${NAMESPACE} not found, performing fresh deploy to both colors."
           helm install --namespace "${NAMESPACE}" --create-namespace redis ./helm/redis/
-          helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue --set image="${IMAGE}" guestbook-blue ./helm/guestbook-go/
-          helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=green --set image="${IMAGE}" guestbook-green ./helm/guestbook-go/
+          helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue --set image="${CI_IMAGE_TAG}" guestbook-blue ./helm/guestbook-go/
+          helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=green --set image="${CI_IMAGE_TAG}" guestbook-green ./helm/guestbook-go/
           helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue guestbook-service ./helm/guestbook-service/
         else
           echo "Found namespace ${NAMESPACE}. Fetching current primary deployment."
@@ -47,7 +47,7 @@ deploy:
             SECONDARY="blue"
           fi
           echo "Primary is color ${PRIMARY}. Deploying latest build to secondary, color: ${SECONDARY}"
-          helm upgrade --namespace "${NAMESPACE}" --set targetRole=${SECONDARY} --set image="${IMAGE}" guestbook-${SECONDARY} ./helm/guestbook-go/
+          helm upgrade --namespace "${NAMESPACE}" --set targetRole=${SECONDARY} --set image="${CI_IMAGE_TAG}" guestbook-${SECONDARY} ./helm/guestbook-go/
         fi
         echo "Image ${CI_IMAGE_TAG} deployed to secondary, color ${SECONDARY}."
         # TODO: Wait for testing...
