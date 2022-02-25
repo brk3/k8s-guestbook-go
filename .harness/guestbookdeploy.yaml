@@ -7,6 +7,65 @@ pipeline:
     tags: {}
     stages:
         - stage:
+              name: redis
+              identifier: redis
+              description: ""
+              type: Deployment
+              spec:
+                  serviceConfig:
+                      serviceRef: redis
+                      serviceDefinition:
+                          type: Kubernetes
+                          spec:
+                              variables: []
+                              manifests:
+                                  - manifest:
+                                        identifier: redis
+                                        type: HelmChart
+                                        spec:
+                                            store:
+                                                type: Github
+                                                spec:
+                                                    connectorRef: pbourkegithub
+                                                    gitFetchType: Branch
+                                                    folderPath: helm/redis/
+                                                    repoName: k8s-guestbook-go
+                                                    branch: main
+                                            skipResourceVersioning: false
+                                            helmVersion: V2
+                  infrastructure:
+                      environmentRef: aks
+                      infrastructureDefinition:
+                          type: KubernetesDirect
+                          spec:
+                              connectorRef: cicdtestakscluster
+                              namespace: guestbook
+                              releaseName: release-<+INFRA_KEY>
+                      allowSimultaneousDeployments: false
+                  execution:
+                      steps:
+                          - step:
+                                name: Rollout Deployment
+                                identifier: rolloutDeployment
+                                type: K8sRollingDeploy
+                                timeout: 10m
+                                spec:
+                                    skipDryRun: false
+                      rollbackSteps:
+                          - step:
+                                name: Rollback Rollout Deployment
+                                identifier: rollbackRolloutDeployment
+                                type: K8sRollingRollback
+                                timeout: 10m
+                                spec: {}
+              tags: {}
+              failureStrategies:
+                  - onFailure:
+                        errors:
+                            - AllErrors
+                        action:
+                            type: StageRollback
+        - stage:
               name: deploy
               identifier: deploy
               description: ""
@@ -46,20 +105,6 @@ pipeline:
                                                     repoName: k8s-guestbook-go
                                                     branch: main
                                             skipResourceVersioning: false
-                                  - manifest:
-                                        identifier: redis
-                                        type: HelmChart
-                                        spec:
-                                            store:
-                                                type: Github
-                                                spec:
-                                                    connectorRef: pbourkegithub
-                                                    gitFetchType: Branch
-                                                    folderPath: helm/redis/
-                                                    repoName: k8s-guestbook-go
-                                                    branch: main
-                                            skipResourceVersioning: false
-                                            helmVersion: V2
                               artifacts:
                                   primary:
                                       spec:
@@ -73,7 +118,7 @@ pipeline:
                           type: KubernetesDirect
                           spec:
                               connectorRef: cicdtestakscluster
-                              namespace: harness-delegate-ng
+                              namespace: guestbook
                               releaseName: release-<+INFRA_KEY>
                       allowSimultaneousDeployments: false
                   execution:
