@@ -1,0 +1,102 @@
+pipeline:
+    name: guestbook-deploy
+    identifier: guestbookdeploy
+    allowStageExecutions: false
+    projectIdentifier: pbourkeproj1
+    orgIdentifier: default
+    tags: {}
+    stages:
+        - stage:
+              name: deploy
+              identifier: deploy
+              description: ""
+              type: Deployment
+              spec:
+                  serviceConfig:
+                      serviceRef: guestbook
+                      serviceDefinition:
+                          type: Kubernetes
+                          spec:
+                              variables: []
+                              manifests:
+                                  - manifest:
+                                        identifier: values
+                                        type: Values
+                                        spec:
+                                            store:
+                                                type: Github
+                                                spec:
+                                                    connectorRef: pbourkegithub
+                                                    gitFetchType: Branch
+                                                    paths:
+                                                        - .harness/values.yaml
+                                                    repoName: k8s-guestbook-go
+                                                    branch: main
+                                  - manifest:
+                                        identifier: guestbook
+                                        type: K8sManifest
+                                        spec:
+                                            store:
+                                                type: Github
+                                                spec:
+                                                    connectorRef: pbourkegithub
+                                                    gitFetchType: Branch
+                                                    paths:
+                                                        - helm/guestbook-go/templates/guestbook-deployment.yaml
+                                                    repoName: k8s-guestbook-go
+                                                    branch: main
+                                            skipResourceVersioning: false
+                                  - manifest:
+                                        identifier: redis
+                                        type: HelmChart
+                                        spec:
+                                            store:
+                                                type: Github
+                                                spec:
+                                                    connectorRef: pbourkegithub
+                                                    gitFetchType: Branch
+                                                    folderPath: helm/redis/
+                                                    repoName: k8s-guestbook-go
+                                                    branch: main
+                                            skipResourceVersioning: false
+                                            helmVersion: V2
+                  infrastructure:
+                      environmentRef: aks
+                      infrastructureDefinition:
+                          type: KubernetesDirect
+                          spec:
+                              connectorRef: cicdtestakscluster
+                              namespace: harness-delegate-ng
+                              releaseName: release-<+INFRA_KEY>
+                      allowSimultaneousDeployments: false
+                  execution:
+                      steps:
+                          - step:
+                                name: Stage Deployment
+                                identifier: stageDeployment
+                                type: K8sBlueGreenDeploy
+                                timeout: 10m
+                                spec:
+                                    skipDryRun: false
+                          - step:
+                                name: Swap primary with stage service
+                                identifier: bgSwapServices
+                                type: K8sBGSwapServices
+                                timeout: 10m
+                                spec:
+                                    skipDryRun: false
+                      rollbackSteps:
+                          - step:
+                                name: Swap primary with stage service
+                                identifier: rollbackBgSwapServices
+                                type: K8sBGSwapServices
+                                timeout: 10m
+                                spec:
+                                    skipDryRun: false
+              tags: {}
+              failureStrategies:
+                  - onFailure:
+                        errors:
+                            - AllErrors
+                        action:
+                            type: StageRollback
