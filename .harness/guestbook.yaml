@@ -1,0 +1,36 @@
+pipeline:
+    name: guestbook
+    identifier: guestbook
+    allowStageExecutions: false
+    projectIdentifier: pbourkeproj1
+    orgIdentifier: default
+    tags: {}
+    properties:
+        ci:
+            codebase:
+                connectorRef: pbourkegithub
+                repoName: k8s-guestbook-go
+                build: <+input>
+    stages:
+        - stage:
+              name: build
+              identifier: build
+              type: CI
+              spec:
+                  cloneCodebase: true
+                  infrastructure:
+                      type: KubernetesDirect
+                      spec:
+                          connectorRef: cicdtestakscluster
+                          namespace: guestbook
+                  execution:
+                      steps:
+                          - step:
+                                type: BuildAndPushDockerRegistry
+                                name: guestbook
+                                identifier: guestbook
+                                spec:
+                                    connectorRef: pbourkedockerhubconnector
+                                    repo: guestbook
+                                    tags:
+                                        - <+codebase.commitSha>
