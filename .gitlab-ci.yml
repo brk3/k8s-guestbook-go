@@ -30,7 +30,8 @@ deploy:
   script:
     - kubectl config get-contexts
     - kubectl config use-context mygroup1371/myproject:pbourke
-    - >
+    #- >
+    - |-
         if kubectl get ns "${NAMESPACE}" >/dev/null 2>&1; then
           echo "Namespace ${NAMESPACE} not found, performing fresh deploy to both colors."
           helm install --namespace "${NAMESPACE}" --create-namespace redis ./helm/redis/
