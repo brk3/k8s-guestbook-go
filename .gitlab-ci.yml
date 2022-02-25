@@ -17,7 +17,7 @@ build:
     - cat /kaniko/.docker/config.json
     - >-
       /kaniko/executor
-      --context "guestbook-go"
+      --context "."
       --dockerfile "./Dockerfile"
       --destination "${CI_IMAGE_TAG}"
 
