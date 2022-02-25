@@ -18,7 +18,7 @@ build:
     - >-
       /kaniko/executor
       --context "guestbook-go"
-      --dockerfile "guestbook-go/Dockerfile"
+      --dockerfile "./Dockerfile"
       --destination "${CI_IMAGE_TAG}"
 
 # Requires the K8S agent installed
