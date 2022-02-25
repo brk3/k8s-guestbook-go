@@ -32,7 +32,7 @@ deploy:
     - kubectl config use-context mygroup1371/myproject:pbourke
     #- >
     - |-
-        if kubectl get ns "${NAMESPACE}" >/dev/null 2>&1; then
+        if ! kubectl get ns "${NAMESPACE}" >/dev/null 2>&1; then
           echo "Namespace ${NAMESPACE} not found, performing fresh deploy to both colors."
           helm install --namespace "${NAMESPACE}" --create-namespace redis ./helm/redis/
           helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue --set image="${CI_IMAGE_TAG}" guestbook-blue ./helm/guestbook-go/
