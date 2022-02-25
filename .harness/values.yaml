@@ -1,0 +1,2 @@
+targetRole: <+stage.variables.targetRole>
+image: <+artifact.image>
