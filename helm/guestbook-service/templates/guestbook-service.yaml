@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     app: guestbook
+    role: {{ .Values.targetRole }}
   name: guestbook
 spec:
   allocateLoadBalancerNodePorts: true
@@ -15,6 +16,7 @@ spec:
     targetPort: http-server
   selector:
     app: guestbook
+    role: {{ .Values.targetRole }}
   sessionAffinity: None
   type: LoadBalancer
 status:

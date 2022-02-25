@@ -269,3 +269,10 @@ Tip: To turn down your Kubernetes cluster, follow the corresponding instructions
 <!-- BEGIN MUNGE: GENERATED_ANALYTICS -->
 [![Analytics](https://kubernetes-site.appspot.com/UA-36037335-10/GitHub/examples/guestbook-go/README.md?pixel)]()
 <!-- END MUNGE: GENERATED_ANALYTICS -->
+
+helm install --namespace pbourke --create-namespace redis ./helm/redis/
+helm install --namespace pbourke --create-namespace --set targetRole=blue --set image=brk3/guestbook-go:9e2cda89 guestbook-blue ./helm/guestbook-go/
+helm install --namespace pbourke --create-namespace --set targetRole=green --set image=brk3/guestbook-go:9e2cda89 guestbook-green ./helm/guestbook-go/
+
+helm upgrade --namespace pbourke --create-namespace --set targetRole=blue --set image=brk3/guestbook:9e2cda89 guestbook-go ./guestbook-go/
+helm install --namespace pbourke --create-namespace --set targetRole=blue guestbook-service ./helm/guestbook-service/

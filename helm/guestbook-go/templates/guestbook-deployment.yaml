@@ -1,9 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: guestbook
+  name: guestbook-{{ .Values.targetRole }}
   labels:
     app: guestbook
+    role: {{ .Values.targetRole }}
 spec:
   replicas: 3
   selector:
@@ -13,9 +14,10 @@ spec:
     metadata:
       labels:
         app: guestbook
+        role: {{ .Values.targetRole }}
     spec:
       containers:
-      - image: k8s.gcr.io/guestbook:v3
+      - image: {{ .Values.image }}
         imagePullPolicy: IfNotPresent
         name: guestbook
         ports:
