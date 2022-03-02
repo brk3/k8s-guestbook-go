@@ -4,7 +4,7 @@ variables:
   CI_REGISTRY_PASSWORD: ${CI_REGISTRY_PASSWORD}
   CI_IMAGE_TAG: brk3/guestbook:${CI_COMMIT_SHORT_SHA}
   CI_REGISTRY: "https://index.docker.io/v1/"
-  NAMESPACE: guestbook
+  NAMESPACE: guestbook-gitlab
 
 build:
   stage: build
@@ -21,34 +21,44 @@ build:
       --dockerfile "./Dockerfile"
       --destination "${CI_IMAGE_TAG}"
 
-# Requires the K8S agent installed
-deploy:
+deploy-rolling:
   stage: deploy
   image:
     name: dtzar/helm-kubectl:3.8.0
     entrypoint: [""]
   script:
-    - kubectl config get-contexts
     - kubectl config use-context mygroup1371/myproject:pbourke
-    - |-
-        if ! kubectl get ns "${NAMESPACE}" >/dev/null 2>&1; then
-          echo "INFO: Namespace ${NAMESPACE} not found, performing fresh deploy to both colors."
-          helm install --namespace "${NAMESPACE}" --create-namespace redis ./helm/redis/
-          helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue --set image="${CI_IMAGE_TAG}" guestbook-blue ./helm/guestbook-go/
-          helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=green --set image="${CI_IMAGE_TAG}" guestbook-green ./helm/guestbook-go/
-          helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue guestbook-service ./helm/guestbook-service/
-        else
-          echo "INFO: Found namespace ${NAMESPACE}. Fetching current primary deployment."
-          PRIMARY=$(kubectl get service guestbook -n "${NAMESPACE}" -o jsonpath='{.metadata.labels.role}')
-          if [[ "${PRIMARY}" == "blue" ]]; then
-            SECONDARY="green"
-          else
-            SECONDARY="blue"
-          fi
-          echo "INFO: Primary is color ${PRIMARY}. Deploying latest build to secondary, color: ${SECONDARY}"
-          helm upgrade --namespace "${NAMESPACE}" --set targetRole=${SECONDARY} --set image="${CI_IMAGE_TAG}" guestbook-${SECONDARY} ./helm/guestbook-go/
-        fi
-        echo "INFO: Image ${CI_IMAGE_TAG} deployed to secondary, color ${SECONDARY}."
-        # TODO: Wait for testing...
-        # TODO: Swap service:
-        # helm upgrade --namespace "${NAMESPACE}" --set targetRole=${SECONDARY} guestbook-service ./helm/guestbook-service/
+    - helm upgrade --install --namespace "${NAMESPACE}" --create-namespace redis ./helm/redis/
+    - helm upgrade --install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue --set image="${CI_IMAGE_TAG}" guestbook-blue ./helm/guestbook-go/
+    - helm upgrade --install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue guestbook-service ./helm/guestbook-service/
+
+#deploy-blue-green:
+  #stage: deploy
+  #image:
+    #name: dtzar/helm-kubectl:3.8.0
+    #entrypoint: [""]
+  #script:
+    #- kubectl config get-contexts
+    #- kubectl config use-context mygroup1371/myproject:pbourke
+    #- |-
+        #if ! kubectl get ns "${NAMESPACE}" >/dev/null 2>&1; then
+          #echo "INFO: Namespace ${NAMESPACE} not found, performing fresh deploy to both colors."
+          #helm install --namespace "${NAMESPACE}" --create-namespace redis ./helm/redis/
+          #helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue --set image="${CI_IMAGE_TAG}" guestbook-blue ./helm/guestbook-go/
+          #helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=green --set image="${CI_IMAGE_TAG}" guestbook-green ./helm/guestbook-go/
+          #helm install --namespace "${NAMESPACE}" --create-namespace --set targetRole=blue guestbook-service ./helm/guestbook-service/
+        #else
+          #echo "INFO: Found namespace ${NAMESPACE}. Fetching current primary deployment."
+          #PRIMARY=$(kubectl get service guestbook -n "${NAMESPACE}" -o jsonpath='{.metadata.labels.role}')
+          #if [[ "${PRIMARY}" == "blue" ]]; then
+            #SECONDARY="green"
+          #else
+            #SECONDARY="blue"
+          #fi
+          #echo "INFO: Primary is color ${PRIMARY}. Deploying latest build to secondary, color: ${SECONDARY}"
+          #helm upgrade --namespace "${NAMESPACE}" --set targetRole=${SECONDARY} --set image="${CI_IMAGE_TAG}" guestbook-${SECONDARY} ./helm/guestbook-go/
+        #fi
+        #echo "INFO: Image ${CI_IMAGE_TAG} deployed to secondary, color ${SECONDARY}."
+        ## TODO: Wait for testing...
+        ## TODO: Swap service:
+        ## helm upgrade --namespace "${NAMESPACE}" --set targetRole=${SECONDARY} guestbook-service ./helm/guestbook-service/
