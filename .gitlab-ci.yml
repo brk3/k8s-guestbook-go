@@ -23,6 +23,8 @@ build:
 
 deploy-rolling:
   stage: deploy
+  environment:
+    name: test
   image:
     name: dtzar/helm-kubectl:3.8.0
     entrypoint: [""]
