@@ -1,0 +1,14 @@
+inputSet:
+  identifier: "main"
+  pipeline:
+    identifier: "podidtest"
+    properties:
+      ci:
+        codebase:
+          build:
+            type: "branch"
+            spec:
+              branch: "main"
+  name: "main"
+  orgIdentifier: "default"
+  projectIdentifier: "pbourkeproj1"
