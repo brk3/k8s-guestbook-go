@@ -1,0 +1,12 @@
+connector:
+  name: akscicdpodid
+  identifier: akscicdpodid
+  description:
+  orgIdentifier: default
+  projectIdentifier: pbourkeproj1
+  type: K8sCluster
+  spec:
+    credential:
+      type: InheritFromDelegate
+    delegateSelectors:
+    - cicd-aks-podidentity
