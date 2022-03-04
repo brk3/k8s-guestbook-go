@@ -21,7 +21,7 @@ pipeline:
                   infrastructure:
                       type: KubernetesDirect
                       spec:
-                          connectorRef: cicdtestakscluster
+                          connectorRef: akscicdpodid
                           namespace: my-app
                   execution:
                       steps:
