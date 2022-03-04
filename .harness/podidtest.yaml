@@ -9,7 +9,7 @@ pipeline:
         ci:
             codebase:
                 connectorRef: pbourkegithub
-                repoName: foo
+                repoName: k8s-guestbook-go
                 build: <+input>
     stages:
         - stage:
