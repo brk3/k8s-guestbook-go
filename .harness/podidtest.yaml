@@ -1,0 +1,35 @@
+pipeline:
+    name: podidtest
+    identifier: podidtest
+    allowStageExecutions: false
+    projectIdentifier: pbourkeproj1
+    orgIdentifier: default
+    tags: {}
+    properties:
+        ci:
+            codebase:
+                connectorRef: pbourkegithub
+                repoName: foo
+                build: <+input>
+    stages:
+        - stage:
+              name: test
+              identifier: test
+              type: CI
+              spec:
+                  cloneCodebase: true
+                  infrastructure:
+                      type: KubernetesDirect
+                      spec:
+                          connectorRef: cicdtestakscluster
+                          namespace: my-app
+                  execution:
+                      steps:
+                          - step:
+                                type: Run
+                                name: test
+                                identifier: test
+                                spec:
+                                    connectorRef: pbourkedockerhubconnector
+                                    image: brk3/rover-local:1.0.9-2112.031113
+                                    command: az login --identity --debug
