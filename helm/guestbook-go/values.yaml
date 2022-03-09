@@ -2,5 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-targetRole: blue
-image: brk3/guestbook:v1
+image: brk3/guestbook:eb1f9612
+name: standard
+
