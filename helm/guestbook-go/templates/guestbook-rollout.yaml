@@ -2,8 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: guestbook-{{ .Values.name }}
-  labels:
-    app: guestbook-{{ .Values.name }}
 spec:
   replicas: 3
   selector:
@@ -23,3 +21,13 @@ spec:
           name: http-server
           protocol: TCP
         resources: {}
+  strategy:
+    blueGreen:
+      # activeService specifies the service to update with the new template hash at time of promotion.
+      # This field is mandatory for the blueGreen update strategy.
+      activeService: guestbook-{{ .Values.name }}
+      # autoPromotionEnabled disables automated promotion of the new stack by pausing the rollout
+      # immediately before the promotion. If omitted, the default behavior is to promote the new
+      # stack as soon as the ReplicaSet are completely ready/available.
+      # Rollouts can be resumed using: `kubectl argo rollouts promote ROLLOUT`
+      autoPromotionEnabled: false
