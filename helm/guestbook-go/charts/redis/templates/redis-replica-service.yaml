@@ -17,5 +17,3 @@ spec:
     role: replica
   sessionAffinity: None
   type: ClusterIP
-status:
-  loadBalancer: {}

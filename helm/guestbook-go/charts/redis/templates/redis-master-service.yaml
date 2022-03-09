@@ -17,5 +17,3 @@ spec:
     role: master
   sessionAffinity: None
   type: ClusterIP
-status:
-  loadBalancer: {}
