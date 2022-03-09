@@ -4,4 +4,4 @@
 
 image: brk3/guestbook:eb1f9612
 name: standard
-
+ingressIP: x.x.x.x
