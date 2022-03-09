@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  creationTimestamp: "2022-03-09T10:51:38Z"
+  generation: 2
+  name: guestbook
+  namespace: guestboook
+  resourceVersion: "538172"
+  uid: 24dfdc0d-5a25-4638-bbcc-bc894c91cad6
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: guestbook.20.123.110.27.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: guestbook
+            port:
+              number: 3000
+        path: /(.*)
+        pathType: Exact
+status:
+  loadBalancer:
+    ingress:
+    - ip: 20.123.110.27
