@@ -3,18 +3,17 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
-  name: guestbook
-  namespace: guestbook
+  name: guestbook-{{ .Values.name }}
+  namespace: guestbook-{{ .Values.name }}
 spec:
   ingressClassName: nginx
   rules:
-    # k get service ingress-nginx-controller -n ingress-nginx
-  - host: guestbook.20.123.110.27.nip.io
+  - host: guestbook.{{ .Values.ingressIP }}.nip.io
     http:
       paths:
       - backend:
           service:
-            name: guestbook
+            name: guestbook-{{ .Values.name }}
             port:
               number: 3000
         path: /(.*)
