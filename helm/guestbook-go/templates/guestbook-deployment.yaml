@@ -1,10 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: guestbook-{{ .Values.targetRole }}
+  #name: guestbook-{{ .Values.targetRole }}
+  name: guestbook
   labels:
     app: guestbook
-    role: {{ .Values.targetRole }}
+    #role: {{ .Values.targetRole }}
 spec:
   replicas: 3
   selector:
@@ -14,7 +15,7 @@ spec:
     metadata:
       labels:
         app: guestbook
-        role: {{ .Values.targetRole }}
+        #role: {{ .Values.targetRole }}
     spec:
       containers:
       - image: {{ .Values.image }}
