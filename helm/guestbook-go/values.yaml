@@ -3,5 +3,6 @@
 # Declare variables to be passed into your templates.
 
 image: brk3/guestbook:eb1f9612
-name: standard
 ingressIP: x.x.x.x
+# Allowable values: rolling, bluegreen, canary
+updateStrategy: rolling

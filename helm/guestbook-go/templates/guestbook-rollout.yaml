@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: guestbook-{{ .Values.name }}
+  name: guestbook-{{ .Values.updateStrategy }}
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: guestbook-{{ .Values.name }}
+      app: guestbook-{{ .Values.updateStrategy }}
   template:
     metadata:
       labels:
-        app: guestbook-{{ .Values.name }}
+        app: guestbook-{{ .Values.updateStrategy }}
     spec:
       containers:
       - image: {{ .Values.image }}
@@ -22,12 +22,29 @@ spec:
           protocol: TCP
         resources: {}
   strategy:
+    {{- if eq .Values.updateStrategy "rolling" }}
+    # https://argoproj.github.io/argo-rollouts/features/canary/#mimicking-rolling-update
+    canary:
+      maxSurge: "25%"
+      maxUnavailable: 0
+    {{- else if eq .Values.updateStrategy "bluegreen" }}
     blueGreen:
       # activeService specifies the service to update with the new template hash at time of promotion.
       # This field is mandatory for the blueGreen update strategy.
-      activeService: guestbook-{{ .Values.name }}
+      activeService: guestbook-{{ .Values.updateStrategy }}
       # autoPromotionEnabled disables automated promotion of the new stack by pausing the rollout
       # immediately before the promotion. If omitted, the default behavior is to promote the new
       # stack as soon as the ReplicaSet are completely ready/available.
       # Rollouts can be resumed using: `kubectl argo rollouts promote ROLLOUT`
       autoPromotionEnabled: false
+    {{- else if eq .Values.updateStrategy "canary" }}
+    canary:
+      maxSurge: "25%"
+      maxUnavailable: 0
+      steps:
+      - setWeight: 10
+      - pause:
+          duration: 1h
+      - setWeight: 20
+      - pause: {} # pause indefinitely
+    {{-end}}

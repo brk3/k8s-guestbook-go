@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: guestbook-{{ .Values.name }}
+  name: guestbook-{{ .Values.updateStrategy }}
 spec:
   ports:
   - port: 80
     targetPort: 3000
   selector:
-    app: guestbook-{{ .Values.name }}
+    app: guestbook-{{ .Values.updateStrategy }}
