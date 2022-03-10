@@ -6,9 +6,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-        
-      - run: az version
-          
+                  
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -17,8 +15,11 @@ jobs:
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v2.1
         
+      - uses: azure/aks-set-context@v2.0
+        with:
+          resource-group: "rg-pbourke-cicd"
+          cluster-name: "pbourke-aks-cicd"
+        
       - name: Test
         run: |
-          az account show
-          kubectl version
-      
+          kubectl get ns
