@@ -47,4 +47,4 @@ spec:
           duration: 1h
       - setWeight: 20
       - pause: {} # pause indefinitely
-    {{-end}}
+    {{- end }}
