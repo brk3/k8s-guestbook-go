@@ -25,7 +25,7 @@ jobs:
           renderEngine: "helm"
           helmChart: "./helm/guestbook-go/"
           overrides: |
-            ingressIP: 20.123.104.249
+            ingressIP:20.123.104.249
           helm-version: "latest"
         id: bake
         
