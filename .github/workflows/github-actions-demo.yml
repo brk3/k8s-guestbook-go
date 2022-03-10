@@ -6,6 +6,8 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
+        
+      - run: az version
           
       - name: Azure Login
         uses: azure/login@v1
