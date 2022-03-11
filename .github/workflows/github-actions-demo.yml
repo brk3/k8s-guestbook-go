@@ -26,10 +26,21 @@ jobs:
           helmChart: "./helm/guestbook-go/"
           overrides: |
             ingressIP:20.123.104.249
+            image:brk3/guestbook:v1-f21295e
+            updateStrategy:rolling # keep this at rolling to stop argo taking over
           helm-version: "latest"
         id: bake
         
-      - uses: Azure/k8s-deploy@v1.2
+      #- uses: Azure/k8s-deploy@v1.2
+      #  with:
+      #    action: deploy
+      #    manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          
+      - uses: Azure/k8s-deploy@v1.4
         with:
-          action: deploy
+          namespace: "guestbook"
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          strategy: blue-green
+          action: deploy
+          route-method: ingress # substitute with service/smi as per need
+          version-switch-buffer: 2 # mins
