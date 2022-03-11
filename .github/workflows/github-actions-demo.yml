@@ -27,7 +27,7 @@ jobs:
           overrides: |
             ingressIP:20.123.104.249
             image:brk3/guestbook:v1-f21295e
-            updateStrategy:rolling # keep this at rolling to stop argo taking over
+            updateStrategy:rolling
           helm-version: "latest"
         id: bake
         
