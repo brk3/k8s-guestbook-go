@@ -25,7 +25,8 @@ $(document).ready(function() {
 
   // colors = purple, blue, red, green, yellow
   var colors = ["#549", "#18d", "#d31", "#2a4", "#db1"];
-  var randomColor = colors[Math.floor(5 * Math.random())];
+  //var randomColor = colors[Math.floor(5 * Math.random())];
+  var randomColor = colors[1];
   (function setElementsColor(color) {
     headerTitleElement.css("color", color);
     entryContentElement.css("box-shadow", "inset 0 0 0 2px " + color);
