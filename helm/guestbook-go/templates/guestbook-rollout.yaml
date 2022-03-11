@@ -23,7 +23,6 @@ spec:
         resources: {}
   strategy:
     {{- if eq .Values.updateStrategy "rolling" }}
-    # https://argoproj.github.io/argo-rollouts/features/canary/#mimicking-rolling-update
     canary:
       maxSurge: "25%"
       maxUnavailable: 0
