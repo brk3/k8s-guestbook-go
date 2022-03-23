@@ -35,6 +35,8 @@ jobs:
         with:
           action: deploy
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          namespace: guestbook-rolling
+          strategy: none
 
       #- uses: Azure/k8s-deploy@v1.5
         #with:
