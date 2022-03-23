@@ -6,41 +6,41 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-                  
+
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
+
       - name: Kubectl tool installer
         uses: Azure/setup-kubectl@v2.1
-        
+
       - uses: azure/aks-set-context@v2.0
         with:
           resource-group: "rg-pbourke-cicd"
           cluster-name: "pbourke-aks-cicd"
-          
+
       - uses: azure/k8s-bake@v2
         with:
           renderEngine: "helm"
           helmChart: "./helm/guestbook-go/"
           overrides: |
-            ingressIP:20.123.104.249
+            ingressIP:20.103.244.183
             image:brk3/guestbook:v1-f21295e
             updateStrategy:rolling
           helm-version: "latest"
         id: bake
-        
-      #- uses: Azure/k8s-deploy@v1.2
-      #  with:
-      #    action: deploy
-      #    manifests: ${{ steps.bake.outputs.manifestsBundle }}
-          
-      - uses: Azure/k8s-deploy@v1.5
+
+      - uses: Azure/k8s-deploy@v1.2
         with:
-          namespace: "guestbook"
-          manifests: ${{ steps.bake.outputs.manifestsBundle }}
-          strategy: blue-green
           action: deploy
-          route-method: ingress # substitute with service/smi as per need
-          version-switch-buffer: 2 # mins
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+
+      #- uses: Azure/k8s-deploy@v1.5
+        #with:
+          #namespace: "guestbook"
+          #manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          #strategy: blue-green
+          #action: deploy
+          #route-method: ingress # substitute with service/smi as per need
+          #version-switch-buffer: 2 # mins
