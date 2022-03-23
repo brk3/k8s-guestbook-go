@@ -17,8 +17,8 @@ jobs:
 
       - uses: azure/aks-set-context@v2.0
         with:
-          resource-group: "rg-pbourke-cicd"
-          cluster-name: "pbourke-aks-cicd"
+          resource-group: "rg-pbourke-2303"
+          cluster-name: "aks-pbourke-2303"
 
       - uses: azure/k8s-bake@v2
         with:
