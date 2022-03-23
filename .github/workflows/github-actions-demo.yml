@@ -25,7 +25,7 @@ jobs:
           renderEngine: "helm"
           helmChart: "./helm/guestbook-go/"
           overrides: |
-            ingressIP:20.103.244.183
+            ingressIP:20.103.243.246
             image:brk3/guestbook:v1-f21295e
             updateStrategy:rolling
           helm-version: "latest"
