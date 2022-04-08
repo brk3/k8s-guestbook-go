@@ -1,42 +1,32 @@
 package helloworld
 
 import (
-	"dagger.io/dagger"
-	"dagger.io/dagger/core"
+  "dagger.io/dagger"
+  "dagger.io/dagger/core"
   "universe.dagger.io/docker"
 )
 
 dagger.#Plan & {
-	actions: {
-		_alpine: core.#Pull & {source: "alpine:3"}
+  client: env: DOCKER_REGISTRY_PASSWORD: dagger.#Secret
 
-		// Hello world
-		hello: core.#Exec & {
-			input: _alpine.output
-			args: ["echo", "hello, world!"]
-			always: true
-		}
-
-    run: {
-      //_alpine: core.#Pull & {source: "alpine:3"}
-
-      _pull: docker.#Pull & { source: "index.docker.io/debian" }
-
+  actions: {
+    build: {
       clone: core.#GitPull & {
         remote: "https://github.com/brk3/k8s-guestbook-go/"
-        ref: "refs/heads/main"
+        ref:    "refs/heads/main"
       }
 
-      read: core.#ReadFile & {
-        input: clone.output
-        path: "Dockerfile"
+      build: docker.#Dockerfile & {
+        source: clone.output
+        dockerfile: path: "./Dockerfile"
       }
 
-      hello: core.#Exec & {
-        input: _alpine.output
-        args: ["echo", read.contents]
-        always: true
+      push: docker.#Push & {
+        auth: username: "brk3"
+        auth: secret: client.env.DOCKER_REGISTRY_PASSWORD
+        image: build.output
+        dest: "docker.io/brk3/foo:123"
       }
     }
-	}
+  }
 }
